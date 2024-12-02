@@ -11,7 +11,7 @@ IMAGGA_URL = 'https://api.imagga.com/v2/tags'
 @app.route('/')
 def index():
     # Lista de imágenes, deben estar en la carpeta static
-    images = ['imagen1.jpg', 'imagen2.jpg', 'imagen3.jpg', 'image4.jpg']
+    images = ['imagen1.jpg', 'imagen2.jpg', 'imagen3.jpg']
     return render_template('index.html', images=images)
 
 @app.route('/analyze', methods=['POST'])
