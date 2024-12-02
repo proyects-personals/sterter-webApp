@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizar Imágenes con Imagga</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .container {
+            text-align: center;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 900px;
+        }
+        .image-container {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 200px;
+            max-height: 200px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .image-container label {
+            display: block;
+            margin-top: 5px;
+        }
+        .result-tags {
+            font-weight: bold;
+            color: green;
+        }
+        .result-error {
+            color: red;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            margin-bottom: 20px;
+        }
+        .results {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 40px;
+            text-align: left;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Analizar Imágenes con Imagga</h1>
+    </header>
+
+    <div class="container">
+        <h2>Selecciona las imágenes para analizar</h2>
+        <form action="/analyze" method="post">
+            <p>Selecciona las imágenes que deseas analizar:</p>
+            <!-- Mostrar imágenes -->
+            <div class="image-selection">
+                {% for image in images %}
+                    <div class="image-container">
+                        <!-- Se genera la URL correctamente para las imágenes -->
+                        <img src="{{ url_for('static', filename=image) }}" alt="Imagen de ejemplo">
+                        <label>
+                            <input type="checkbox" name="image_urls" value="{{ image }}">
+                            Seleccionar
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit">Analizar</button>
+        </form>
+    </div>
+
+    {% if results %}
+        <div class="results">
+            <h2>Resultados del Análisis</h2>
+            <ul>
+                {% for result in results %}
+                    <li>
+                        <strong>Imagen:</strong> 
+                        <a href="{{ url_for('static', filename=result.url) }}" target="_blank">{{ url_for('static', filename=result.url) }}</a><br>
+                        {% if result.tags %}
+                            <span class="result-tags">
+                                Etiquetas: 
+                                {{ result.tags[0]['tag']['en'] }} ({{ result.tags[0]['confidence'] }}%), 
+                                {{ result.tags[1]['tag']['en'] }} ({{ result.tags[1]['confidence'] }}%)
+                            </span>
+                        {% else %}
+                            <span class="result-error">Error: {{ result.error }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+</body>
+</html>
